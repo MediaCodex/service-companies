@@ -1,6 +1,6 @@
 import serverless from 'serverless-http'
 import { customAlphabet } from 'nanoid'
-import { nolookalikes } from 'nanoid-dictionary'
+import nolookalikes from 'nanoid-dictionary'
 
 /**
  * Either return an AWS Lambda handler or init

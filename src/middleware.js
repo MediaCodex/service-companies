@@ -1,6 +1,5 @@
-import Joi from '@hapi/joi'
 import jsonError from 'koa-json-error'
-import R from 'ramda'
+import * as R from 'ramda'
 
 /**
  * Validate request body, or return validation-failed response
