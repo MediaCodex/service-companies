@@ -22,7 +22,7 @@ const schemaAttributes = {
  *
  * @constant {string} modelName
  */
-const modelName = process.env.DYNAMODB_TABLE_ANIME || 'companies'
+const modelName = process.env.DYNAMODB_TABLE_COMPANIES || 'companies'
 
 /**
  * Model config, primarily this is to prevent Dynamoose from
