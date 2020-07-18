@@ -1,0 +1,39 @@
+import Koa from 'koa'
+import { wrapper } from '../helpers'
+import { applyDefaults } from '../middleware'
+import Company from '../models/company'
+
+/**
+ * Initialise Koa
+ */
+const app = new Koa()
+applyDefaults(app)
+
+/**
+ * Function logic
+ *
+ * @param {Koa.Context} ctx
+ */
+const handler = async (ctx) => {
+  const path = ctx.path.split('/')
+  const id = path[path.length - 1]
+
+  if (!id) {
+    ctx.throw(400, 'ID required')
+  }
+
+  const company = await Company.get(id)
+
+  if (!company) {
+    ctx.throw(404, 'Company not found')
+  }
+
+  ctx.body = company
+  ctx.status = 200
+}
+
+/**
+ * Wrap Koa in Lambda-compatible IO and export
+ */
+app.use(handler)
+export default wrapper(app)
