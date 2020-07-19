@@ -3,9 +3,8 @@ resource "aws_lambda_function" "http_create" {
   role          = aws_iam_role.lambda_http_create.arn
 
   // handler
-  source_code_hash = filebase64sha256("../build/http-create.zip")
-  filename         = "../build/http-create.zip"
-  handler          = "http-create.handler"
+  source_code_hash = filebase64sha256("../build/http-create.js.zip")
+  filename         = "../build/http-create.js.zip"
 
   // runtime
   runtime = "nodejs12.x"

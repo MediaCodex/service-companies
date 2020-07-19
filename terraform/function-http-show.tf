@@ -3,9 +3,8 @@ resource "aws_lambda_function" "http_show" {
   role          = aws_iam_role.lambda_http_show.arn
 
   // handler
-  source_code_hash = filebase64sha256("../build/http-show.zip")
-  filename         = "../build/http-show.zip"
-  handler          = "http-show.default"
+  source_code_hash = filebase64sha256("../build/http-show.js.zip")
+  filename         = "../build/http-show.js.zip"
 
   // runtime
   runtime = "nodejs12.x"

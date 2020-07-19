@@ -1,5 +1,4 @@
 const path = require('path')
-const ZipPlugin = require('zip-webpack-plugin')
 
 /**
  * Output directory
@@ -12,17 +11,6 @@ const buildDir = path.join(__dirname, 'build')
 const entryPoints = {
   'http-create': './src/controllers/create.js',
   'http-show': './src/controllers/show.js'
-}
-
-/**
- * Bundle each function individually
- */
-const plugins = {
-  plugins: Object.keys(entryPoints).map((entryName) => new ZipPlugin({
-    path: buildDir,
-    filename: entryName,
-    extension: 'zip'
-  }))
 }
 
 /**
@@ -47,6 +35,5 @@ module.exports = {
   },
   optimization: {
     minimize: false
-  },
-  ...plugins
+  }
 }
