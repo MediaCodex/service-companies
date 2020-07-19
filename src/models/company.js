@@ -12,8 +12,7 @@ const schemaAttributes = {
   id: {
     type: String,
     hashKey: true,
-    required: true,
-    validate: /[\w]{10}/
+    required: true
   }
 }
 
