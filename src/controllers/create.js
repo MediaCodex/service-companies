@@ -20,7 +20,7 @@ app.use(bodyParser())
  */
 const requestSchema = Joi.object({
   name: Joi.string().min(3).max(255).required().trim(),
-  slug: Joi.string().min(3).max(502).regex(/^[a-zA-Z0-9-]+$/).required(), // 512 chars, accounting for ID
+  slug: Joi.string().min(3).max(502).regex(/^[a-zA-Z0-9-]+$/).required() // 512 chars, accounting for ID
 }).required()
 app.use(validateBody(requestSchema))
 
