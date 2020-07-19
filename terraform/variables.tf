@@ -25,3 +25,13 @@ variable "terraform_state" {
     dynamo = "arn:aws:dynamodb:eu-central-1:939514526661:table/terraform-state-lock"
   }
 }
+
+variable "lumigo_layer" {
+  type    = string
+  default = "arn:aws:lambda:eu-central-1:114300393969:layer:lumigo-node-tracer:80"
+}
+
+variable "lumigo_token" {
+  type    = string
+  default = ""
+}
