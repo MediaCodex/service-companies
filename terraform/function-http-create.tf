@@ -51,6 +51,8 @@ resource "aws_apigatewayv2_route" "create" {
   api_id    = data.terraform_remote_state.core.outputs.gateway_id
   route_key = "POST /companies"
   target    = "integrations/${aws_apigatewayv2_integration.create.id}"
+  authorizer_id = data.terraform_remote_state.core.outputs.authorizer
+  authorization_type = "JWT"
 }
 
 resource "aws_apigatewayv2_integration" "create" {
