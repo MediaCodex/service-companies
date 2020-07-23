@@ -28,6 +28,21 @@ resource "aws_iam_role" "lambda_http_create" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
+
+module "lambda_http_create_gateway" {
+  source = "./modules/lambda"
+  method = "POST"
+  path   = "/companies"
+
+  function_name       = "companies-http-create"
+  function_invoke_arn = aws_lambda_function.http_create.invoke_arn
+
+  gateway_id            = data.terraform_remote_state.core.outputs.gateway_id
+  gateway_execution_arn = data.terraform_remote_state.core.outputs.gateway_execution
+
+  authorizer_id = data.terraform_remote_state.core.outputs.authorizer
+}
+
 /*
  * Permissions
  */
@@ -42,24 +57,4 @@ module "lambda_http_create_cloudwatch" {
   source = "./modules/iam-cloudwatch"
   role   = aws_iam_role.lambda_http_create.id
   name   = "companies-http-create"
-}
-
-/*
- * Gateway
- */
-resource "aws_apigatewayv2_route" "create" {
-  api_id    = data.terraform_remote_state.core.outputs.gateway_id
-  route_key = "POST /companies"
-  target    = "integrations/${aws_apigatewayv2_integration.create.id}"
-  authorizer_id = data.terraform_remote_state.core.outputs.authorizer
-  authorization_type = "JWT"
-}
-
-resource "aws_apigatewayv2_integration" "create" {
-  api_id                 = data.terraform_remote_state.core.outputs.gateway_id
-  integration_type       = "AWS_PROXY"
-  payload_format_version = "2.0"
-  connection_type        = "INTERNET"
-  integration_method     = "POST"
-  integration_uri        = aws_lambda_function.http_create.invoke_arn
 }

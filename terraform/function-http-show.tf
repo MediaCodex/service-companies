@@ -28,6 +28,18 @@ resource "aws_iam_role" "lambda_http_show" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
+module "lambda_http_show_gateway" {
+  source = "./modules/lambda"
+  method = "GET"
+  path   = "/companies/{id}"
+
+  function_name       = "companies-http-show"
+  function_invoke_arn = aws_lambda_function.http_show.invoke_arn
+
+  gateway_id            = data.terraform_remote_state.core.outputs.gateway_id
+  gateway_execution_arn = data.terraform_remote_state.core.outputs.gateway_execution
+}
+
 /*
  * Permissions
  */
@@ -42,22 +54,4 @@ module "lambda_http_show_cloudwatch" {
   source = "./modules/iam-cloudwatch"
   role   = aws_iam_role.lambda_http_show.id
   name   = "companies-http-show"
-}
-
-/*
- * Gateway
- */
-resource "aws_apigatewayv2_route" "show" {
-  api_id    = data.terraform_remote_state.core.outputs.gateway_id
-  route_key = "GET /companies/{id}"
-  target    = "integrations/${aws_apigatewayv2_integration.show.id}"
-}
-
-resource "aws_apigatewayv2_integration" "show" {
-  api_id                 = data.terraform_remote_state.core.outputs.gateway_id
-  integration_type       = "AWS_PROXY"
-  payload_format_version = "2.0"
-  connection_type        = "INTERNET"
-  integration_method     = "POST"
-  integration_uri        = aws_lambda_function.http_show.invoke_arn
 }
