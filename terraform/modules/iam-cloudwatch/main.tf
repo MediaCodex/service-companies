@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "cloudwatch" {
-  name = "Cloudwatch"
-  role = var.role
+  name   = "Cloudwatch"
+  role   = var.role
   policy = data.aws_iam_policy_document.cloudwatch.json
 }
 

@@ -10,8 +10,8 @@ locals {
 }
 
 resource "aws_iam_role_policy" "dynamodb" {
-  name = "DynamoDB"
-  role = var.role
+  name   = "DynamoDB"
+  role   = var.role
   policy = jsonencode(local.policy)
 }
 
