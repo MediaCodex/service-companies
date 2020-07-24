@@ -1,6 +1,3 @@
-import jsonError from 'koa-json-error'
-import * as R from 'ramda'
-
 /**
  * Validate request body, or return validation-failed response
  *
@@ -8,7 +5,7 @@ import * as R from 'ramda'
  * @param {import('@hapi/joi').ValidationOptions} options
  * @returns {import('koa').Middleware}
  */
-export const validateBody = (schema, options) => async function validator (ctx, next) {
+export default (schema, options) => async function validator (ctx, next) {
   let validated; try {
     validated = await schema.validateAsync(ctx.request.body, { abortEarly: false, stripUnknown: true, ...options })
   } catch (error) {
@@ -22,23 +19,4 @@ export const validateBody = (schema, options) => async function validator (ctx, 
 
   ctx.request.body = validated
   await next()
-}
-
-/**
- * Apply default middlewares
- *
- * @param {import('koa').Koa} app
- */
-export const applyDefaults = (app) => {
-  const isProd = () => process.env.NODE_ENV === 'production'
-
-  // format error as JSON, omit stacktrace in prod
-  app.use(jsonError({
-    postFormat: (e, obj) => {
-      const omit = R.omit(['stack'])
-      const toObj = R.compose((arr) => ({ ...arr }), R.split('\n    '))
-      const format = R.evolve({ stack: toObj })
-      return R.ifElse(isProd, omit, format)(obj)
-    }
-  }))
 }
