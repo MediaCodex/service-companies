@@ -30,8 +30,15 @@ export const validateBody = (schema, options) => async function validator (ctx, 
  * @param {import('koa').Koa} app
  */
 export const applyDefaults = (app) => {
-  const isProd = () => process.env.NODE_ENV !== 'production'
+  const isProd = () => process.env.NODE_ENV === 'production'
 
   // format error as JSON, omit stacktrace in prod
-  app.use(jsonError({ postFormat: (e, obj) => R.when(isProd, R.omit(['stack']))(obj) }))
+  app.use(jsonError({
+    postFormat: (e, obj) => {
+      const omit = R.omit(['stack'])
+      const toObj = R.compose((arr) => ({ ...arr }), R.split('\n    '))
+      const format = R.evolve({ stack: toObj })
+      return R.ifElse(isProd, omit, format)(obj)
+    }
+  }))
 }
