@@ -2,7 +2,7 @@ import Koa from 'koa'
 import Joi from '@hapi/joi'
 import bodyParser from 'koa-bodyparser'
 import { wrapper, nanoid } from '../helpers'
-import { validateBody } from '../middleware'
+import { validateBody, applyDefaults } from '../middleware'
 import Company from '../models/company'
 
 /**
@@ -10,6 +10,7 @@ import Company from '../models/company'
  */
 const app = new Koa()
 app.use(bodyParser())
+applyDefaults(app)
 
 /**
  * Request validation
