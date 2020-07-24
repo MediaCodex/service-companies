@@ -30,8 +30,10 @@ app.use(validateBody(requestSchema))
  *
  * @param {Koa.Context} ctx
  */
-const handler = async (ctx) => {
-  await Company.create({ ...ctx.request.body, id: nanoid() })
+const handler = async (ctx) => { 
+  const id = nanoid()
+  await Company.create({ ...ctx.request.body, id })
+  ctx.body = { id }
   ctx.status = 201
 }
 
