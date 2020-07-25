@@ -2,7 +2,7 @@ import Koa from 'koa'
 import Joi from '@hapi/joi'
 import bodyParser from 'koa-bodyparser'
 import { wrapper, nanoid } from '../helpers'
-import { validateBody, applyDefaults } from '../middleware'
+import { validateBody, applyDefaults, auth } from '../middleware'
 import Company from '../models/company'
 
 /**
@@ -11,6 +11,7 @@ import Company from '../models/company'
 const app = new Koa()
 app.use(bodyParser())
 applyDefaults(app)
+app.use(auth)
 
 /**
  * Request validation
@@ -21,7 +22,8 @@ applyDefaults(app)
  */
 const requestSchema = Joi.object({
   name: Joi.string().min(3).max(255).required().trim(),
-  slug: Joi.string().min(3).max(502).regex(/^[a-zA-Z0-9-]+$/).required() // 512 chars, accounting for ID
+  slug: Joi.string().min(3).max(502).regex(/^[a-zA-Z0-9-]+$/).required(), // 512 chars, accounting for ID
+  founded: Joi.string().isoDate()
 }).required()
 app.use(validateBody(requestSchema))
 
@@ -30,10 +32,16 @@ app.use(validateBody(requestSchema))
  *
  * @param {Koa.Context} ctx
  */
-const handler = async (ctx) => { 
-  const id = nanoid()
-  await Company.create({ ...ctx.request.body, id })
-  ctx.body = { id }
+const handler = async (ctx) => {
+  const item = {
+    ...ctx.request.body,
+    id: nanoid(),
+    created_by: ctx.state.userId,
+    created_at: (new Date()).toISOString()
+  }
+
+  await Company.create(item)
+  ctx.body = { id: item.id }
   ctx.status = 201
 }
 
