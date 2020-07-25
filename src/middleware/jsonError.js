@@ -1,5 +1,5 @@
 import jsonError from 'koa-json-error'
-import * as R from 'ramda'
+import { omit, compose, evolve, ifElse, split } from 'ramda'
 
 /**
  * Format error as JSON, omit stacktrace in prod
@@ -8,9 +8,9 @@ import * as R from 'ramda'
  */
 export default (isProd = true) => jsonError({
   postFormat: (e, obj) => {
-    const omit = R.omit(['stack'])
-    const toObj = R.compose((arr) => ({ ...arr }), R.split('\n    '))
-    const format = R.evolve({ stack: toObj })
-    return R.ifElse(isProd, omit, format)(obj)
+    const remove = omit(['stack'])
+    const toObj = compose((arr) => ({ ...arr }), split('\n    '))
+    const format = evolve({ stack: toObj })
+    return ifElse(isProd, remove, format)(obj)
   }
 })
