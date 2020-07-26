@@ -1,4 +1,4 @@
-import dynamoose from 'dynamoose'
+import * as dynamoose from 'dynamoose'
 
 /**
  * Attribute definitions
@@ -33,7 +33,9 @@ const modelName = process.env.DYNAMODB_TABLE_COMPANIES || 'companies'
 const modelOptions = {
   create: false,
   update: false,
-  waitForActive: false
+  waitForActive: {
+    enabled: false
+  }
 }
 
 /**
@@ -44,7 +46,7 @@ const modelOptions = {
  * @constant {object} schemaOptions
  */
 const schemaOptions = {
-  saveUnknown: true // TODO: resolve via validation?
+  saveUnknown: true
 }
 
 /**
