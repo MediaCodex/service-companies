@@ -15,14 +15,15 @@ applyDefaults(app)
  * @param {Koa.Context} ctx
  */
 const handler = async (ctx) => {
+  const bySlug = !!ctx.query.slug
   const path = ctx.path.split('/')
   const id = path[path.length - 1]
 
   if (!id) {
-    ctx.throw(400, 'ID required')
+    ctx.throw(400, `${bySlug ? 'Slug' : 'ID'} required`)
   }
 
-  const company = await Company.get(id)
+  const company = await (bySlug ? Company.getBySlug(id) : Company.get(id))
 
   if (!company) {
     ctx.throw(404, 'Company not found')

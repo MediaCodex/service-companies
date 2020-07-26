@@ -80,4 +80,14 @@ model.methods.set('slugExists', async function (slug, id = undefined) {
   return res.count > 0
 })
 
+/**
+ * Get single Item by its slug
+ *
+ * @param {string} slug
+ */
+model.methods.set('getBySlug', async function (slug) {
+  const res = await this.query('slug').eq(slug).using('slug').limit(1).exec()
+  return res[0]
+})
+
 export default model
