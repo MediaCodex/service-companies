@@ -36,6 +36,7 @@ data "aws_iam_policy_document" "write" {
     sid = "Write"
     actions = [
       "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
       "dynamodb:BatchWriteItem",
       "dynamodb:UpdateTimeToLive"
     ]

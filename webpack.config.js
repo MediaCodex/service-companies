@@ -10,6 +10,7 @@ const buildDir = path.join(__dirname, 'build')
  */
 const entryPoints = {
   'http-create': './src/controllers/create.js',
+  'http-update': './src/controllers/update.js',
   'http-show': './src/controllers/show.js'
 }
 
