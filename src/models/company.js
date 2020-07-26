@@ -1,4 +1,4 @@
-import * as dynamoose from 'dynamoose'
+import dynamoose from 'dynamoose'
 
 /**
  * Attribute definitions
@@ -13,6 +13,14 @@ const schemaAttributes = {
     type: String,
     hashKey: true,
     required: true
+  },
+  slug: {
+    type: String,
+    required: true,
+    index: {
+      name: 'slug',
+      global: true
+    }
   }
 }
 
@@ -53,4 +61,23 @@ const schemaOptions = {
  * Dynamoose model
  */
 const schema = new dynamoose.Schema(schemaAttributes, schemaOptions)
-export default dynamoose.model(modelName, schema, modelOptions)
+const model = dynamoose.model(modelName, schema, modelOptions)
+
+/**
+ * See if slug already exists, optinally exclude a specific ID
+ *
+ * @param {string} slug
+ * @param {string} [id]
+ */
+model.methods.set('slugExists', async function (slug, id = undefined) {
+  const query = this.query('slug').eq(slug)
+
+  if (id) {
+    query.and().where('id').not().eq(id)
+  }
+
+  const res = await query.count().using('slug').exec()
+  return res.count > 0
+})
+
+export default model

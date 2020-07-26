@@ -51,6 +51,7 @@ module "lambda_http_create_dynamodb" {
   role   = aws_iam_role.lambda_http_create.id
   table  = aws_dynamodb_table.companies.arn
   write  = true
+  read   = true
 }
 
 module "lambda_http_create_cloudwatch" {

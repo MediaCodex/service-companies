@@ -22,7 +22,7 @@ app.use(auth)
  */
 const requestSchema = Joi.object({
   name: Joi.string().min(3).max(255).required().trim(),
-  slug: Joi.string().min(3).max(502).regex(/^[a-zA-Z0-9-]+$/).required(), // 512 chars, accounting for ID
+  slug: Joi.string().min(3).max(501).regex(/^[a-zA-Z0-9-]+$/).required(), // 512 chars, accounting for ID
   founded: Joi.string().isoDate()
 }).required()
 app.use(validateBody(requestSchema))
@@ -38,6 +38,11 @@ const handler = async (ctx) => {
     id: nanoid(),
     created_by: ctx.state.userId,
     created_at: (new Date()).toISOString()
+  }
+
+  const slug = await Company.slugExists(item.slug)
+  if (slug) {
+    ctx.throw(400, 'Slug already in use')
   }
 
   await Company.create(item)
