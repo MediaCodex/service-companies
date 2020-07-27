@@ -40,7 +40,7 @@ const handler = async (ctx) => {
     created_at: (new Date()).toISOString()
   }
 
-  const slug = await Company.slugExists(item.slug)
+  const slug = await Company.slugExists(item.slug, null)
   if (slug) {
     ctx.throw(400, 'Slug already in use')
   }
