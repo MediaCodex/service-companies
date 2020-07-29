@@ -1,7 +1,7 @@
 import Koa from 'koa'
-import { wrapper } from '../helpers'
-import { applyDefaults } from '../middleware'
-import Company from '../models/company'
+import { wrapper } from '../../helpers'
+import { applyDefaults } from '../../middleware'
+import Company from '../../models/company'
 
 /**
  * Initialise Koa

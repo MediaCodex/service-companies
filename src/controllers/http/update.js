@@ -2,9 +2,9 @@ import Koa from 'koa'
 import Joi from '@hapi/joi'
 import auth from 'koa-serverless-auth'
 import bodyParser from 'koa-bodyparser'
-import { wrapper, nanoid } from '../helpers'
-import { validateBody, applyDefaults } from '../middleware'
-import Company from '../models/company'
+import { wrapper } from '../../helpers'
+import { validateBody, applyDefaults } from '../../middleware'
+import Company from '../../models/company'
 
 /**
  * Initialise Koa
@@ -16,8 +16,6 @@ app.use(auth)
 
 /**
  * Request validation
- *
- * TODO: confirm remote IDs, normalise
  *
  * @constant {Joi.Schema} validation
  */
@@ -34,21 +32,23 @@ app.use(validateBody(requestSchema))
  * @param {Koa.Context} ctx
  */
 const handler = async (ctx) => {
+  const path = ctx.path.split('/')
+  const id = path[path.length - 1]
+
   const item = {
     ...ctx.request.body,
-    id: nanoid(),
-    created_by: ctx.state.userId,
-    created_at: (new Date()).toISOString()
+    updated_by: ctx.state.userId,
+    updated_at: (new Date()).toISOString()
   }
 
-  const slug = await Company.slugExists(item.slug, null)
+  const slug = await Company.slugExists(item.slug, id)
   if (slug) {
     ctx.throw(400, 'Slug already in use')
   }
 
-  await Company.create(item)
-  ctx.body = { id: item.id }
-  ctx.status = 201
+  await Company.update({ id }, item)
+  ctx.body = { id }
+  ctx.status = 200
 }
 
 /**
