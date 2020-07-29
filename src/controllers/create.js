@@ -1,8 +1,9 @@
 import Koa from 'koa'
 import Joi from '@hapi/joi'
+import auth from 'koa-serverless-auth'
 import bodyParser from 'koa-bodyparser'
 import { wrapper, nanoid } from '../helpers'
-import { validateBody, applyDefaults, auth } from '../middleware'
+import { validateBody, applyDefaults } from '../middleware'
 import Company from '../models/company'
 
 /**
