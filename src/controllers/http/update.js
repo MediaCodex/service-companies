@@ -1,18 +1,9 @@
-import Koa from 'koa'
 import Joi from '@hapi/joi'
 import auth from 'koa-serverless-auth'
 import bodyParser from 'koa-bodyparser'
 import { wrapper } from '../../helpers'
-import { validateBody, applyDefaults } from '../../middleware'
+import defaultMiddleware, { validateBody } from '../../middleware'
 import Company from '../../models/company'
-
-/**
- * Initialise Koa
- */
-const app = new Koa()
-app.use(bodyParser())
-applyDefaults(app)
-app.use(auth)
 
 /**
  * Request validation
@@ -24,14 +15,24 @@ const requestSchema = Joi.object({
   slug: Joi.string().min(3).max(501).regex(/^[a-zA-Z0-9-]+$/).required(), // 512 chars, accounting for ID
   founded: Joi.string().isoDate()
 }).required()
-app.use(validateBody(requestSchema))
+
+/**
+ * Koa Middleware
+ *
+ * @constant {Array<import('koa').Middleware>} middleware
+ */
+export const middleware = [
+  validateBody(requestSchema),
+  bodyParser(),
+  auth
+]
 
 /**
  * Function logic
  *
  * @param {Koa.Context} ctx
  */
-const handler = async (ctx) => {
+export const handler = async (ctx) => {
   const path = ctx.path.split('/')
   const id = path[path.length - 1]
 
@@ -54,5 +55,4 @@ const handler = async (ctx) => {
 /**
  * Wrap Koa in Lambda-compatible IO and export
  */
-app.use(handler)
-export default wrapper(app)
+export default wrapper([handler, ...defaultMiddleware, ...middleware])

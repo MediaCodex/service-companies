@@ -1,20 +1,20 @@
-import Koa from 'koa'
 import { wrapper } from '../../helpers'
-import { applyDefaults } from '../../middleware'
+import defaultMiddleware from '../../middleware'
 import Company from '../../models/company'
 
 /**
- * Initialise Koa
+ * Define middleware
+ *
+ * @constant {Array<import('koa').Middleware>} middleware
  */
-const app = new Koa()
-applyDefaults(app)
+export const middleware = []
 
 /**
  * Function logic
  *
  * @param {Koa.Context} ctx
  */
-const handler = async (ctx) => {
+export const handler = async (ctx) => {
   // get params from query, or headers, or default value
   const rawLimit = ctx.query.limit || ctx.request.get('X-Pagination-Limit') || 50
   const token = ctx.query.token || ctx.request.get('X-Pagination-Token') || undefined
@@ -42,5 +42,4 @@ const handler = async (ctx) => {
 /**
  * Wrap Koa in Lambda-compatible IO and export
  */
-app.use(handler)
-export default wrapper(app)
+export default wrapper([handler, ...defaultMiddleware, ...middleware])

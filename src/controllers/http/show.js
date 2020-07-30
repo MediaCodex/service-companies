@@ -1,20 +1,20 @@
-import Koa from 'koa'
 import { wrapper } from '../../helpers'
-import { applyDefaults } from '../../middleware'
+import defaultMiddleware from '../../middleware'
 import Company from '../../models/company'
 
 /**
- * Initialise Koa
+ * Koa Middleware
+ *
+ * @constant {Array<import('koa').Middleware>} middleware
  */
-const app = new Koa()
-applyDefaults(app)
+export const middleware = []
 
 /**
  * Function logic
  *
  * @param {Koa.Context} ctx
  */
-const handler = async (ctx) => {
+export const handler = async (ctx) => {
   const bySlug = !!ctx.query.slug
   const path = ctx.path.split('/')
   const id = path[path.length - 1]
@@ -36,5 +36,4 @@ const handler = async (ctx) => {
 /**
  * Wrap Koa in Lambda-compatible IO and export
  */
-app.use(handler)
-export default wrapper(app)
+export default wrapper([handler, ...defaultMiddleware, ...middleware])

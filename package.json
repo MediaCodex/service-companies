@@ -4,6 +4,7 @@
   "description": "API Microservice for companies",
   "scripts": {
     "test": "jest --coverage",
+    "start": "node -r esm ./src/router.js",
     "build": "webpack && npm run build:zip",
     "build:zip": "cd build && for i in *.js; do zip $i.zip $i; done"
   },
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@koa/router": "^9.3.1",
     "axios": "^0.19.2",
     "dynamoose": "^2.2.1",
     "esm": "^3.2.25",
