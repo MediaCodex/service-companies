@@ -13,11 +13,6 @@ resource "aws_apigatewayv2_integration" "default" {
   connection_type        = "INTERNET"
   integration_method     = "POST"
   integration_uri        = var.function_invoke_arn
-
-  lifecycle {
-    // https://github.com/terraform-providers/terraform-provider-aws/pull/13062
-    ignore_changes = [passthrough_behavior]
-  }
 }
 
 // with auth
