@@ -35,3 +35,10 @@ variable "lumigo_token" {
   type    = string
   default = ""
 }
+
+variable "first_deploy" {
+  type        = bool
+  description = "Disables some resources that depend on other services being deployed"
+  default     = false
+}
+

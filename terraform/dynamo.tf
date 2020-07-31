@@ -14,9 +14,9 @@ resource "aws_dynamodb_table" "companies" {
   }
 
   global_secondary_index {
-    name               = "slug"
-    hash_key           = "slug"
-    projection_type    = "ALL"
+    name            = "slug"
+    hash_key        = "slug"
+    projection_type = "ALL"
   }
 
   tags = var.default_tags
