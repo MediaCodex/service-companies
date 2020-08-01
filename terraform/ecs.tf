@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "http" {
     logConfiguration = {
       logDriver = "awslogs",
       options = {
-        "awslogs-group"         = "/ecs/fargate-task-definition",
+        "awslogs-group"         = "/ecs/companies-http",
         "awslogs-region"        = data.aws_region.current.name,
         "awslogs-stream-prefix" = "ecs",
         "awslogs-create-group"  = "true"
