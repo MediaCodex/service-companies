@@ -1,6 +1,5 @@
 import Koa from 'koa'
 import Router from '@koa/router'
-import logger from 'koa-logger'
 import { handler as createHandler, middleware as createMiddleware } from './controllers/http/create'
 import { handler as updateHandler, middleware as updateMiddleware } from './controllers/http/update'
 import { handler as indexHandler, middleware as indexMiddleware } from './controllers/http/index'
@@ -11,7 +10,6 @@ import defaultMiddleware from './middleware'
  * Initialise Koa
  */
 const app = new Koa()
-app.use(logger())
 const router = new Router()
 for (const middleware of defaultMiddleware) {
   app.use(middleware)
