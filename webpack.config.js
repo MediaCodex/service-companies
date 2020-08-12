@@ -12,7 +12,8 @@ const entryPoints = {
   'http-create': './src/controllers/http/create.js',
   'http-update': './src/controllers/http/update.js',
   'http-index': './src/controllers/http/index.js',
-  'http-show': './src/controllers/http/show.js'
+  'http-show': './src/controllers/http/show.js',
+  'dynamodb-companies': './src/controllers/dynamodb/companies.js'
 }
 
 /**

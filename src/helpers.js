@@ -24,3 +24,11 @@ export const wrapper = (app, middlewares = []) => {
  * @returns {string}
  */
 export const nanoid = customAlphabet(nolookalikes, 10)
+
+/**
+ * Converts Epoch timestamp integer to ISO8601 string
+ *
+ * @param {Number} timestamp
+ * @returns {String}
+ */
+export const epochToIso = (timestamp) => new Date(timestamp).toISOString()

@@ -4,7 +4,8 @@ locals {
     Statement = concat(
       jsondecode(var.read == true ? data.aws_iam_policy_document.read.json : "{ \"Statement\": [] }").Statement,
       jsondecode(var.write == true ? data.aws_iam_policy_document.write.json : "{ \"Statement\": [] }").Statement,
-      jsondecode(var.delete == true ? data.aws_iam_policy_document.delete.json : "{ \"Statement\": [] }").Statement
+      jsondecode(var.delete == true ? data.aws_iam_policy_document.delete.json : "{ \"Statement\": [] }").Statement,
+      jsondecode(var.stream == true ? data.aws_iam_policy_document.stream.json : "{ \"Statement\": [] }").Statement
     )
   }
 }
@@ -51,5 +52,20 @@ data "aws_iam_policy_document" "delete" {
       "dynamodb:Deleteitem"
     ]
     resources = [var.table]
+  }
+}
+
+data "aws_iam_policy_document" "stream" {
+  statement {
+    sid = "Stream"
+    actions = [
+      "dynamodb:ListStreams",
+      "dynamodb:DescribeStream",
+      "dynamodb:GetRecords",
+      "dynamodb:GetShardIterator"
+    ]
+    resources = [
+      "${var.table}/stream/*"
+    ]
   }
 }

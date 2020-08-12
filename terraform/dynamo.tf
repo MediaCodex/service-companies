@@ -19,5 +19,8 @@ resource "aws_dynamodb_table" "companies" {
     projection_type = "ALL"
   }
 
+  stream_enabled   = true
+  stream_view_type = "NEW_IMAGE"
+
   tags = var.default_tags
 }

@@ -1,4 +1,5 @@
 import dynamoose from 'dynamoose'
+import config from '../config'
 
 /**
  * Attribute definitions
@@ -29,7 +30,7 @@ const schemaAttributes = {
  *
  * @constant {string} modelName
  */
-const modelName = process.env.DYNAMODB_TABLE_COMPANIES || 'companies'
+const modelName = config.dynamoTables.companies
 
 /**
  * Model config, primarily this is to prevent Dynamoose from

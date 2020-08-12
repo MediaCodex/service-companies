@@ -25,3 +25,9 @@ variable "delete" {
   description = "Allow deletion of items from the table"
   default     = false
 }
+
+variable "stream" {
+  type        = bool
+  description = "Allow access to DynamoDB Stream"
+  default     = false
+}
