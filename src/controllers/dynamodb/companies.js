@@ -33,7 +33,7 @@ const eventTypes = {
  */
 const eventType = (record) => {
   const type = eventTypes[record.eventName]
-  return `net.mediacodex.companies.${type}`
+  return `net.mediacodex.companies.company.${type}`
 }
 
 /**
@@ -71,20 +71,6 @@ const keysToSubject = (keys) => {
 }
 
 /**
- * Generate source from AWS params and table name
- *
- * TODO: possibly convert to full table ARN?
- *
- * @param {Record} record
- * @returns {String}
- */
-const getSource = (record) => [
-  record.eventSource,
-  record.awsRegion,
-  config.dynamoTables.companies
-].join('.')
-
-/**
  * Convert stream record to CloudEvent
  * 
  * TODO: add schema URI
@@ -95,7 +81,7 @@ const getSource = (record) => [
 const createEvent = (record) => new CloudEvent({
   specversion: '1.0',
   datacontenttype: 'appplication/json',
-  source: getSource(record),
+  source: '/companies',
   id: record.eventID,
   type: eventType(record),
   data: getImage(record),
@@ -111,11 +97,10 @@ export default async (event, context) => {
 
   for (const record of event.Records) {
     const event = createEvent(record)
-    console.debug(event.toString())
     events.push({
       Detail: event.toString(),
-      DetailType: 'application/cloudevents+json',
-      // EventBusName: config.eventbridgeBus,
+      DetailType: event.type,
+      EventBusName: config.eventbridgeBus,
       Source: event.source,
       Time: event.time
     })
