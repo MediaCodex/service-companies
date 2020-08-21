@@ -21,13 +21,11 @@ jobs:
         shell: bash
         working-directory: terraform/
 
-
-
     # Checkout the repository to the GitHub Actions runner
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       # Setup environment variables
       - name: Setup env (dev)
         if: github.ref == 'refs/heads/develop'
@@ -41,13 +39,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Select Workspace
-        run: terraform workspace select ${TERRAFORM_WORKSPACE}
-
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
-      
+
+      - name: Terraform Select Workspace
+        run: terraform workspace select ${TERRAFORM_WORKSPACE}
+
       # Apply from plan
       - name: Terraform Manual Apply
         if: github.event_name == 'push' && github.event.pull_request.merged == true
