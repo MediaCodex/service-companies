@@ -1,0 +1,61 @@
+name: 'Terraform Apply'
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  apply:
+    name: 'Apply'
+    runs-on: ubuntu-latest
+    on:
+      push:
+        branches:
+          - develop
+          - master
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+
+    # Checkout the repository to the GitHub Actions runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      # Setup environment variables
+      - name: Setup env (dev)
+        if: github.ref == 'refs/heads/develop'
+        uses: allenevans/set-env@v1.0.0
+        with:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          TERRAFORM_WORKSPACE: development
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Select Workspace
+        run: terraform workspace select ${TERRAFORM_WORKSPACE}
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        run: terraform init
+      
+      # Apply from plan
+      - name: Terraform Manual Apply
+        if: github.event_name == 'push' && github.event.pull_request.merged == true
+        run: terraform apply ${PLAN}
+
+      # Auto-deploy for manual pushes to develop
+      - name: Terraform Manual Apply
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        run: terraform apply -auto-approve
