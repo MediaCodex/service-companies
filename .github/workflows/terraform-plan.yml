@@ -1,7 +1,7 @@
 name: 'Terraform Plan'
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - develop
       - master
@@ -28,7 +28,7 @@ jobs:
       
       # Setup environment variables
       - name: Setup env (dev)
-        if: github.ref == 'refs/heads/develop'
+        if: github.base_ref == 'refs/heads/develop'
         uses: allenevans/set-env@v1.0.0
         with:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
@@ -56,7 +56,6 @@ jobs:
         run: terraform plan -out=plan.tfplan
 
       - uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -83,14 +82,8 @@ jobs:
             })
       
       - name: Upload plan
-        if: github.event_name != 'push'
         uses: jakejarvis/s3-sync-action@master
         env:
           AWS_S3_BUCKET: terraform-state-mediacodex
           SOURCE_DIR: plan.tfplan
           DEST_DIR: github-actions-plans/${TERRAFORM_WORKSPACE}/${project}-${{github.sha}}.tfplan
-
-      # Auto-deploy for manual pushes to dev
-      - name: Terraform Manual Apply
-        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        run: terraform apply -auto-approve
