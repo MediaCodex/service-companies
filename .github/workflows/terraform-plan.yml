@@ -16,9 +16,9 @@ jobs:
       run:
         shell: bash
         working-directory: terraform/
-      env:
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-        PROJECT: companies
+        env:
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          PROJECT: companies
 
 
     # Checkout the repository to the GitHub Actions runner
