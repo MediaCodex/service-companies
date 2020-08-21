@@ -6,6 +6,10 @@ on:
       - develop
       - master
 
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  PROJECT: companies
+
 jobs:
   apply:
     name: 'Apply'
@@ -16,8 +20,7 @@ jobs:
       run:
         shell: bash
         working-directory: terraform/
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
 
 
     # Checkout the repository to the GitHub Actions runner
