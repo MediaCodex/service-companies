@@ -1,5 +1,10 @@
 # Companies service
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=MediaCodex_service-companies&metric=coverage)](https://sonarcloud.io/dashboard?id=MediaCodex_service-companies)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=MediaCodex_service-companies&metric=bugs)](https://sonarcloud.io/dashboard?id=MediaCodex_service-companies)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=MediaCodex_service-companies&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=MediaCodex_service-companies)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MediaCodex_service-companies&metric=alert_status)](https://sonarcloud.io/dashboard?id=MediaCodex_service-companies)
+
 ## First deployment
 
 While this should always be the first service to be instantiated in a new environment, and for the most part it will work just fine since
