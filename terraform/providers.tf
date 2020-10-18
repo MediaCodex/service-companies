@@ -1,12 +1,11 @@
 terraform {
-  backend "s3" {
-    bucket         = "terraform-state-mediacodex"
-    key            = "companies.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
-    dynamodb_table = "terraform-state-lock"
-    role_arn       = "arn:aws:iam::939514526661:role/remotestate/companies"
-    session_name   = "terraform"
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "MediaCodex"
+
+    workspaces {
+      prefix = "service-companies"
+    }
   }
 }
 
@@ -27,7 +26,6 @@ variable "deploy_aws_accounts" {
 }
 
 provider "aws" {
-  version             = "~> 3.0"
   region              = "eu-central-1"
   allowed_account_ids = var.deploy_aws_accounts[local.environment]
   assume_role {
