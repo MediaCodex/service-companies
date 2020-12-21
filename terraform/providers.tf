@@ -1,11 +1,12 @@
 terraform {
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "MediaCodex"
-
-    workspaces {
-      prefix = "service-companies"
-    }
+  backend "s3" {
+    bucket         = "terraform-state-mediacodex"
+    key            = "companies.tfstate"
+    region         = "eu-central-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+    role_arn       = "arn:aws:iam::939514526661:role/remotestate/companies"
+    session_name   = "terraform"
   }
 }
 
