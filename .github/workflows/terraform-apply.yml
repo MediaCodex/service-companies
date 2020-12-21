@@ -15,8 +15,8 @@ on:
       - closed
 
 env:
+  PROJECT: service-companies
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  PROJECT: companies
   IS_MERGED_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
 
 jobs:
@@ -58,14 +58,14 @@ jobs:
       # Download plan
       - name: Download plan
         uses: keithweaver/aws-s3-github-action@master
-        if: $IS_MERGED_PR
+        if: ${{ env.IS_MERGED_PR == true }}
         env:
-          source: s3://terraform-plan-mediacodex/dev/$project/${{ github.event.number }}.tfplan
+          source: s3://terraform-plan-mediacodex/dev/$PROJECT/${{ github.event.number }}.tfplan
           destination: ./dev.tfplan
 
       # Apply plan
       - name: Apply plan
-        if: $IS_MERGED_PR
+        if: ${{ env.IS_MERGED_PR == true }}
         run: terraform apply -auto-approve dev.tfplan
 
 
@@ -76,7 +76,7 @@ jobs:
 
     # enforce dev-first and PR only deployments
     needs: [development]
-    if: $IS_MERGED_PR
+    if: ${{ env.IS_MERGED_PR == true }}
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
@@ -107,7 +107,7 @@ jobs:
       - name: Download plan
         uses: keithweaver/aws-s3-github-action@master
         env:
-          source: s3://terraform-plan-mediacodex/prod/$project/${{ github.event.number }}.tfplan
+          source: s3://terraform-plan-mediacodex/prod/$PROJECT/${{ github.event.number }}.tfplan
           destination: ./prod.tfplan
 
       # Apply plan

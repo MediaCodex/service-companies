@@ -8,8 +8,8 @@ on:
       - 'terraform/**'
 
 env:
+  PROJECT: service-companies
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  PROJECT: companies
 
 jobs:
   development:
@@ -79,7 +79,7 @@ jobs:
         uses: keithweaver/aws-s3-github-action@master
         env:
           source: ./plan.tfplan
-          destination: s3://terraform-plan-mediacodex/dev/$project/${{ github.event.number }}.tfplan
+          destination: s3://terraform-plan-mediacodex/dev/$PROJECT/${{ github.event.number }}.tfplan
 
   productions:
     name: 'Production'
@@ -148,4 +148,4 @@ jobs:
         uses: keithweaver/aws-s3-github-action@master
         env:
           source: ./plan.tfplan
-          destination: s3://terraform-plan-mediacodex/prod/$project/${{ github.event.number }}.tfplan
+          destination: s3://terraform-plan-mediacodex/prod/$PROJECT/${{ github.event.number }}.tfplan
