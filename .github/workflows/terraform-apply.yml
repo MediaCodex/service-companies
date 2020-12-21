@@ -1,57 +1,115 @@
-name: 'Terraform Apply'
+name: 'Deploy Terraform'
 
 on:
   push:
     branches:
-      - develop
       - master
+    paths:
+      - 'terraform/**'
+  pull_request:
+    branches:
+      -  master
+    paths:
+      - 'terraform/**'
+    types:
+      - closed
 
 env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   PROJECT: companies
+  IS_MERGED_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
 
 jobs:
-  apply:
-    name: 'Apply'
+  development:
+    name: 'Development'
     runs-on: ubuntu-latest
+    environment: Development
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+
+    # Use the Bash shell and set working dir
     defaults:
       run:
         shell: bash
         working-directory: terraform/
-
-    # Checkout the repository to the GitHub Actions runner
+    
     steps:
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
-
-      # Setup environment variables
-      - name: Setup env (dev)
-        if: github.ref == 'refs/heads/develop'
-        uses: allenevans/set-env@v1.0.0
-        with:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          TERRAFORM_WORKSPACE: development
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
-        run: terraform init
+      # Initialize terraform and select workspace.
+      - name: Init Terraform
+        run: |
+          terraform init
+          terraform workspace select dev
 
-      - name: Terraform Select Workspace
-        run: terraform workspace select ${TERRAFORM_WORKSPACE}
-
-      # Apply from plan
-      - name: Terraform Manual Apply
-        if: github.event_name == 'push' && github.event.pull_request.merged == true
-        run: terraform apply ${PLAN}
-
-      # Auto-deploy for manual pushes to develop
-      - name: Terraform Manual Apply
-        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+      # Auto apply
+      - name: Auto apply
+        if: ${{ github.event_name == 'push' }}
         run: terraform apply -auto-approve
+
+      # Download plan
+      - name: Download plan
+        uses: keithweaver/aws-s3-github-action@master
+        if: $IS_MERGED_PR
+        env:
+          source: s3://terraform-plan-mediacodex/dev/$project/${{ github.event.number }}.tfplan
+          destination: ./dev.tfplan
+
+      # Apply plan
+      - name: Apply plan
+        if: $IS_MERGED_PR
+        run: terraform apply -auto-approve dev.tfplan
+
+
+  production:
+    name: 'Production'
+    runs-on: ubuntu-latest
+    environment: Production
+
+    # enforce dev-first and PR only deployments
+    needs: [development]
+    if: $IS_MERGED_PR
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+
+    # Use the Bash shell and set working dir
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/
+    
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      # Initialize terraform and select workspace.
+      - name: Init Terraform
+        run: |
+          terraform init
+          terraform workspace select prod
+
+      # Download plan
+      - name: Download plan
+        uses: keithweaver/aws-s3-github-action@master
+        env:
+          source: s3://terraform-plan-mediacodex/prod/$project/${{ github.event.number }}.tfplan
+          destination: ./prod.tfplan
+
+      # Apply plan
+      - name: Apply Plan
+        run: terraform apply -auto-approve prod.tfplan
