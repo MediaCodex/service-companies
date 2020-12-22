@@ -22,7 +22,7 @@ const requestSchema = Joi.object({
  * @constant {Array<import('koa').Middleware>} middleware
  */
 export const middleware = [
-  auth,
+  auth(),
   bodyParser(),
   validateBody(requestSchema)
 ]
