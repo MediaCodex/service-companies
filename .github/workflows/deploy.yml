@@ -17,7 +17,6 @@ on:
 env:
   PROJECT: companies
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  IS_MERGED_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
 
 jobs:
   build:
@@ -105,14 +104,14 @@ jobs:
       # Download plan
       - name: Download plan
         uses: keithweaver/aws-s3-github-action@master
-        if: ${{ env.IS_MERGED_PR == true }}
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
         env:
           source: s3://terraform-plan-mediacodex/dev/$PROJECT/${{ github.event.number }}.tfplan
           destination: ./dev.tfplan
 
       # Apply plan
       - name: Apply plan
-        if: ${{ env.IS_MERGED_PR == true }}
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
         run: terraform apply -auto-approve dev.tfplan
 
       # get ECR config from terraform state
@@ -141,7 +140,7 @@ jobs:
 
     # enforce dev-first and PR only deployments
     needs: [build, development]
-    if: ${{ env.IS_MERGED_PR == true }}
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
