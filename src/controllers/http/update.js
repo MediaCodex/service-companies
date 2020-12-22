@@ -1,8 +1,7 @@
 import Joi from '@hapi/joi'
-import auth from 'koa-serverless-auth'
 import bodyParser from 'koa-bodyparser'
 import { wrapper } from '../../helpers'
-import defaultMiddleware, { validateBody } from '../../middleware'
+import defaultMiddleware, { validateBody, auth } from '../../middleware'
 import Company from '../../models/company'
 
 /**
@@ -22,7 +21,7 @@ const requestSchema = Joi.object({
  * @constant {Array<import('koa').Middleware>} middleware
  */
 export const middleware = [
-  auth(),
+  auth,
   bodyParser(),
   validateBody(requestSchema)
 ]
