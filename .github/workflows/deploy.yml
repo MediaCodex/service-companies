@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'terraform/**'
   pull_request:
     branches:
       -  master
-    paths:
-      - 'terraform/**'
     types:
       - closed
 
