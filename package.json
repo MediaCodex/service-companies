@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API Microservice for companies",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --passWithNoTests",
     "start": "node -r esm ./src/router.js",
     "build": "webpack && npm run build:zip",
     "build:zip": "cd build && for i in *.js; do zip $i.zip $i; done",
