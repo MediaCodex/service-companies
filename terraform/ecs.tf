@@ -176,3 +176,10 @@ resource "aws_apigatewayv2_route" "ecs_http_show" {
   route_key = "GET /companies/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.ecs_http.id}"
 }
+
+/*
+ * Outputs
+ */
+output "ecr_repo" {
+  value = aws_ecr_repository.http.repository_url
+}
