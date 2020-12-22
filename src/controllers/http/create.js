@@ -35,7 +35,6 @@ export const middleware = [
  * @param {Koa.Context} ctx
  */
 export const handler = async (ctx) => {
-  console.log(ctx.request.rawBody)
   const item = {
     ...ctx.request.body,
     id: nanoid(),
