@@ -1,16 +1,23 @@
+import Koa from 'koa'
 import serverless from 'serverless-http'
 import { customAlphabet } from 'nanoid'
 import nolookalikes from 'nanoid-dictionary/nolookalikes'
 
 /**
- * @param {import('koa').Koa} app Koa application
- * @param {import('koa').Koa}
+ * @param {Koa.Middleware} handler Http handler
+ * @param {...Koa.Middleware} middlewares Koa middleware
  */
-export const wrapper = (app, middlewares = []) => {
+export const wrapper = (handler, ...middlewares) => {
+  // init new koa instance
+  const app = new Koa()
+
   // apply middleware
   for (const middleware of middlewares) {
     app.use(middleware)
   }
+
+  // bind handler
+  app.use(handler)
 
   // wrap koa for lambda
   return async (event, context) => {

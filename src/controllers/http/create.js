@@ -24,9 +24,9 @@ const requestSchema = Joi.object({
  * @constant {Array<import('koa').Middleware>} middleware
  */
 export const middleware = [
-  validateBody(requestSchema),
+  auth,
   bodyParser(),
-  auth
+  validateBody(requestSchema)
 ]
 
 /**
@@ -35,6 +35,7 @@ export const middleware = [
  * @param {Koa.Context} ctx
  */
 export const handler = async (ctx) => {
+  console.log(ctx.request.rawBody)
   const item = {
     ...ctx.request.body,
     id: nanoid(),
@@ -55,4 +56,4 @@ export const handler = async (ctx) => {
 /**
  * Wrap Koa in Lambda-compatible IO and export
  */
-export default wrapper([handler, ...defaultMiddleware, ...middleware])
+export default wrapper(handler, ...defaultMiddleware, ...middleware)

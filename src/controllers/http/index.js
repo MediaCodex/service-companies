@@ -42,4 +42,4 @@ export const handler = async (ctx) => {
 /**
  * Wrap Koa in Lambda-compatible IO and export
  */
-export default wrapper([handler, ...defaultMiddleware, ...middleware])
+export default wrapper(handler, ...defaultMiddleware, ...middleware)
