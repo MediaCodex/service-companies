@@ -15,7 +15,7 @@ on:
       - closed
 
 env:
-  PROJECT: service-companies
+  PROJECT: companies
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   IS_MERGED_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
 

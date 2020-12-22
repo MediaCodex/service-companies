@@ -8,7 +8,7 @@ on:
       - 'terraform/**'
 
 env:
-  PROJECT: service-companies
+  PROJECT: companies
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
 jobs:
