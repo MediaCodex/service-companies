@@ -5,6 +5,7 @@ terraform {
     region         = "us-east-1"
     encrypt        = true
     dynamodb_table = "dev-terraform-lock"
+    workspace_key_prefix = "state"
   }
 }
 
