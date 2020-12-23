@@ -1,9 +1,13 @@
-/*
+/**
  * ECS
  */
+data "aws_ssm_parameter" "ecs_api_cluster" {
+  name = "/ecs-api/cluster"
+}
+
 resource "aws_ecs_service" "http" {
   name                = "companies-http"
-  cluster             = data.terraform_remote_state.core.outputs.ecs_api_cluster
+  cluster             = data.aws_ssm_parameter.ecs_api_cluster.value
   task_definition     = aws_ecs_task_definition.http.arn
   scheduling_strategy = "DAEMON"
 
@@ -46,11 +50,18 @@ resource "aws_ecs_task_definition" "http" {
   }])
 }
 
+/**
+ * CloudMap
+ */
+data "aws_ssm_parameter" "ecs_api_namespace" {
+  name = "/ecs-api/namespace"
+}
+
 resource "aws_service_discovery_service" "http" {
   name = "companies-http"
 
   dns_config {
-    namespace_id = data.terraform_remote_state.core.outputs.ecs_api_namespace
+    namespace_id = data.aws_ssm_parameter.acs_api_namespace.value
 
     dns_records {
       ttl  = 10
@@ -65,7 +76,7 @@ resource "aws_service_discovery_service" "http" {
   }
 }
 
-/*
+/**
  * Repository
  */
 resource "aws_ecr_repository" "http" {
@@ -83,6 +94,7 @@ resource "aws_ecr_repository_policy" "http" {
   repository = aws_ecr_repository.http.name
   policy     = data.aws_iam_policy_document.repository_http.json
 }
+
 data "aws_iam_policy_document" "repository_http" {
   statement {
     sid = "Deploy User"
@@ -111,7 +123,7 @@ data "aws_iam_policy_document" "repository_http" {
   }
 }
 
-/*
+/**
  * Container IAM
  */
 resource "aws_iam_role" "ecs_http" {
@@ -119,6 +131,7 @@ resource "aws_iam_role" "ecs_http" {
   path               = "/companies/"
   assume_role_policy = data.aws_iam_policy_document.assume_ecs_http.json
 }
+
 data "aws_iam_policy_document" "assume_ecs_http" {
   statement {
     principals {
@@ -150,9 +163,13 @@ module "iam_ecs_http_dynamodb" {
   read   = true
 }
 
-/*
+/**
  * Gateway mapping
  */
+data "aws_ssm_parameter" "ecs_api_vpc_link" {
+  name = "/ecs-api/namespace"
+}
+
 resource "aws_apigatewayv2_integration" "ecs_http" {
   api_id                 = aws_apigatewayv2_api.public.id
   payload_format_version = "1.0"
@@ -162,7 +179,7 @@ resource "aws_apigatewayv2_integration" "ecs_http" {
   integration_uri    = aws_service_discovery_service.http.arn
 
   connection_type = "VPC_LINK"
-  connection_id   = data.terraform_remote_state.core.outputs.ecs_api_gateway_link
+  connection_id   = data.aws_ssm_parameter.ecs_api_vpc_link.value
 }
 
 resource "aws_apigatewayv2_route" "ecs_http_index" {
@@ -177,7 +194,7 @@ resource "aws_apigatewayv2_route" "ecs_http_show" {
   target    = "integrations/${aws_apigatewayv2_integration.ecs_http.id}"
 }
 
-/*
+/**
  * Outputs
  */
 output "ecr_repo" {

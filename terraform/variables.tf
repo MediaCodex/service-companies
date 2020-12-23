@@ -4,22 +4,9 @@ locals {
   firebase_project = lookup(var.firebase_projects, local.environment)
 }
 
-variable "environments" {
-  type = map(string)
-  default = {
-    dev = "dev"
-    prod  = "prod"
-  }
-}
-
-variable "default_tags" {
-  type        = map(string)
-  description = "Common resource tags for all resources"
-  default = {
-    Service = "companies"
-  }
-}
-
+/**
+ * Terraform
+ */
 variable "terraform_state" {
   type = map(string)
   default = {
@@ -28,6 +15,29 @@ variable "terraform_state" {
   }
 }
 
+variable "environments" {
+  type = map(string)
+  default = {
+    dev = "dev"
+    prod  = "prod"
+  }
+}
+
+/**
+ * AWS
+ */
+variable "default_tags" {
+  type        = map(string)
+  description = "Common resource tags for all resources"
+  default = {
+    Service = "companies"
+  }
+}
+
+
+/**
+ * Lumigo
+ */
 variable "lumigo_layer" {
   type    = string
   default = "arn:aws:lambda:eu-central-1:114300393969:layer:lumigo-node-tracer:115"
@@ -36,6 +46,25 @@ variable "lumigo_layer" {
 variable "lumigo_token" {
   type    = string
   default = ""
+}
+
+/**
+ * Cors
+ */
+variable "cors_origins" {
+  type = map(list(string))
+  default = {
+    dev  = ["*"]
+    prod = ["https://mediacodex.net"]
+  }
+}
+
+variable "cors_expose" {
+  type = map(list(string))
+  default = {
+    dev  = ["*"]
+    prod = []
+  }
 }
 
 /**
@@ -48,6 +77,10 @@ variable "firebase_projects" {
     "prod" = "mediacodex-prod"
   }
 }
+
+/**
+ * Toggles
+ */
 variable "first_deploy" {
   type        = bool
   description = "Disables some resources that depend on other services being deployed"
