@@ -38,7 +38,7 @@ module "lambda_http_create_gateway" {
   function_invoke_arn = aws_lambda_function.http_create.invoke_arn
 
   gateway_id            = aws_apigatewayv2_api.public.id
-  gateway_execution_arn = aws_apigatewayv2_api.public.gateway_execution_arn
+  gateway_execution_arn = aws_apigatewayv2_api.public.execution_arn
 
   authorizer_id = aws_apigatewayv2_authorizer.public.id
 }

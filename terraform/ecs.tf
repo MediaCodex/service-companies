@@ -61,7 +61,7 @@ resource "aws_service_discovery_service" "http" {
   name = "companies-http"
 
   dns_config {
-    namespace_id = data.aws_ssm_parameter.acs_api_namespace.value
+    namespace_id = data.aws_ssm_parameter.ecs_api_namespace.value
 
     dns_records {
       ttl  = 10
