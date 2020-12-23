@@ -1,6 +1,6 @@
 locals {
   environment = lookup(var.environments, terraform.workspace, "dev")
-  uri_prefix  = lookup(keys(var.environments), terraform.workspace, "${terraform.workspace}-")
+  uri_prefix  = contains(keys(var.environments), terraform.workspace) ? "" : "${terraform.workspace}-"
   firebase_project = lookup(var.firebase_projects, local.environment)
 }
 
