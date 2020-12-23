@@ -167,7 +167,7 @@ jobs:
       # Initialize terraform and select workspace.
       - name: Init Terraform
         run: |
-          terraform init
+          terraform init -backend-config "bucket=mediacodex-dev-terraform-state" -backend-config "dynamodb_table=prod-terraform-lock"
           terraform workspace select prod
 
       # Download plan
