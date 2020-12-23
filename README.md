@@ -19,3 +19,9 @@ even be set via the CI env so you don't have to commit any changes, just run the
 | Default value | TF Var         | Env Var               |
 | ------------- | -------------- | --------------------- |
 | `false`       | `first_deploy` | `TF_VAR_first_deploy` |
+
+
+## URI Prefix
+
+If the current workspace is not on of the known environments (e.g. dev/prod) then the HTTP URI will be prefixed witht he workspace name,
+for example a workspace of `test` would result in a public URI of `https://api.mediacodex.dev/v1/test-companies/`.

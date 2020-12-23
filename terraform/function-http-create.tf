@@ -37,10 +37,10 @@ module "lambda_http_create_gateway" {
   function_name       = "companies-http-create"
   function_invoke_arn = aws_lambda_function.http_create.invoke_arn
 
-  gateway_id            = data.terraform_remote_state.core.outputs.gateway_id
-  gateway_execution_arn = data.terraform_remote_state.core.outputs.gateway_execution
+  gateway_id            = aws_apigatewayv2_api.public.id
+  gateway_execution_arn = aws_apigatewayv2_api.public.gateway_execution_arn
 
-  authorizer_id = data.terraform_remote_state.core.outputs.authorizer
+  authorizer_id = aws_apigatewayv2_authorizer.public.id
 }
 
 /*

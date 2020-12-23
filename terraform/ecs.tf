@@ -154,7 +154,7 @@ module "iam_ecs_http_dynamodb" {
  * Gateway mapping
  */
 resource "aws_apigatewayv2_integration" "ecs_http" {
-  api_id                 = data.terraform_remote_state.core.outputs.gateway_id
+  api_id                 = aws_apigatewayv2_api.public.id
   payload_format_version = "1.0"
 
   integration_type   = "HTTP_PROXY"
@@ -166,13 +166,13 @@ resource "aws_apigatewayv2_integration" "ecs_http" {
 }
 
 resource "aws_apigatewayv2_route" "ecs_http_index" {
-  api_id    = data.terraform_remote_state.core.outputs.gateway_id
+  api_id    = aws_apigatewayv2_api.public.id
   route_key = "GET /companies"
   target    = "integrations/${aws_apigatewayv2_integration.ecs_http.id}"
 }
 
 resource "aws_apigatewayv2_route" "ecs_http_show" {
-  api_id    = data.terraform_remote_state.core.outputs.gateway_id
+  api_id    = aws_apigatewayv2_api.public.id
   route_key = "GET /companies/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.ecs_http.id}"
 }

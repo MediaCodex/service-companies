@@ -1,5 +1,7 @@
 locals {
-  environment = "${lookup(var.environments, terraform.workspace, "dev")}"
+  environment = lookup(var.environments, terraform.workspace, "dev")
+  uri_prefix  = lookup(keys(var.environments), terraform.workspace, "${terraform.workspace}-")
+  firebase_project = lookup(var.firebase_projects, local.environment)
 }
 
 variable "environments" {
@@ -36,6 +38,16 @@ variable "lumigo_token" {
   default = ""
 }
 
+/**
+ * Firebase
+ */
+variable "firebase_projects" {
+  type = map(string)
+  default = {
+    "dev"  = "mediacodex-dev"
+    "prod" = "mediacodex-prod"
+  }
+}
 variable "first_deploy" {
   type        = bool
   description = "Disables some resources that depend on other services being deployed"
