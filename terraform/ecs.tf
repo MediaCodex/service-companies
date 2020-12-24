@@ -167,7 +167,7 @@ module "iam_ecs_http_dynamodb" {
  * Gateway mapping
  */
 data "aws_ssm_parameter" "ecs_api_vpc_link" {
-  name = "/ecs-api/namespace"
+  name = "/ecs-api/vpc-link"
 }
 
 resource "aws_apigatewayv2_integration" "ecs_http" {
