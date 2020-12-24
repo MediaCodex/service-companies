@@ -22,7 +22,7 @@ resource "aws_apigatewayv2_stage" "v1" {
   // required due to bug https://github.com/hashicorp/terraform-provider-aws/issues/14742#issuecomment-750693332
   default_route_settings {
     throttling_burst_limit = 100
-    throttling_rate_limit = 50
+    throttling_rate_limit  = 50
   }
 
   lifecycle {

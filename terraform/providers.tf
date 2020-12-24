@@ -1,10 +1,10 @@
 terraform {
   backend "s3" {
-    bucket         = "mediacodex-dev-terraform-state"
-    key            = "companies.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "dev-terraform-lock"
+    bucket               = "mediacodex-dev-terraform-state"
+    key                  = "companies.tfstate"
+    region               = "us-east-1"
+    encrypt              = true
+    dynamodb_table       = "dev-terraform-lock"
     workspace_key_prefix = "state"
   }
 }

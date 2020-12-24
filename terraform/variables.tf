@@ -1,6 +1,6 @@
 locals {
-  environment = lookup(var.environments, terraform.workspace, "dev")
-  uri_prefix  = contains(keys(var.environments), terraform.workspace) ? "" : "-${terraform.workspace}"
+  environment      = lookup(var.environments, terraform.workspace, "dev")
+  uri_prefix       = contains(keys(var.environments), terraform.workspace) ? "" : "-${terraform.workspace}"
   firebase_project = lookup(var.firebase_projects, local.environment)
 }
 
@@ -18,8 +18,8 @@ variable "terraform_state" {
 variable "environments" {
   type = map(string)
   default = {
-    dev = "dev"
-    prod  = "prod"
+    dev  = "dev"
+    prod = "prod"
   }
 }
 
