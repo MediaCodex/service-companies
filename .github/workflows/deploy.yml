@@ -80,7 +80,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: ../
 
       - name: list artifacts
         run: ls -R ../
