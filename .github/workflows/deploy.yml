@@ -55,7 +55,7 @@ jobs:
           retention-days: 5
 
   development:
-    name: 'Development'
+    name: 'Deploy Dev'
     runs-on: ubuntu-latest
     environment: Development
     needs: [build]
@@ -80,7 +80,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: ../build/
+          path: ../
+
+      - name: list artifacts
+        run: ls -R
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -130,7 +133,7 @@ jobs:
 
 
   production:
-    name: 'Production'
+    name: 'Deploy prod'
     runs-on: ubuntu-latest
     environment: Production
 
@@ -158,7 +161,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: ../build/
+          path: ../
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -167,7 +170,7 @@ jobs:
       # Initialize terraform and select workspace.
       - name: Init Terraform
         run: |
-          terraform init -backend-config "bucket=mediacodex-dev-terraform-state" -backend-config "dynamodb_table=prod-terraform-lock"
+          terraform init -backend-config "bucket=mediacodex-prod-terraform-state" -backend-config "dynamodb_table=prod-terraform-lock"
           terraform workspace select prod
 
       # Download plan
