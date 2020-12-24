@@ -40,7 +40,7 @@ variable "default_tags" {
  */
 variable "lumigo_layer" {
   type    = string
-  default = "arn:aws:lambda:eu-central-1:114300393969:layer:lumigo-node-tracer:115"
+  default = "arn:aws:lambda:us-east-1:114300393969:layer:lumigo-node-tracer:115"
 }
 
 variable "lumigo_token" {
