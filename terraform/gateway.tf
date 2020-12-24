@@ -2,6 +2,8 @@ resource "aws_apigatewayv2_api" "public" {
   name          = "public-companies"
   protocol_type = "HTTP"
 
+  disable_execute_api_endpoint = true
+
   cors_configuration {
     allow_headers  = ["*"]
     allow_methods  = ["*"]
@@ -48,5 +50,5 @@ resource "aws_apigatewayv2_api_mapping" "public" {
   api_id          = aws_apigatewayv2_api.public.id
   domain_name     = data.aws_ssm_parameter.gateway_public_domain.value
   stage           = aws_apigatewayv2_stage.v1.id
-  api_mapping_key = "v1/${local.uri_prefix}companies"
+  api_mapping_key = "v1${local.uri_prefix}"
 }
