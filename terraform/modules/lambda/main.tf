@@ -16,19 +16,27 @@ resource "aws_apigatewayv2_integration" "default" {
 }
 
 // with auth
-resource "aws_apigatewayv2_route" "with_auth" {
-  count              = var.authorizer_id != null ? 1 : 0
+# resource "aws_apigatewayv2_route" "with_auth" {
+#   count              = var.enable_auth == true ? 1 : 0
+#   api_id             = var.gateway_id
+#   route_key          = "${var.method} /${local.path}"
+#   target             = "integrations/${aws_apigatewayv2_integration.default.id}"
+#   authorizer_id      = var.authorizer_id
+#   authorization_type = "JWT"
+# }
+
+# // without auth
+# resource "aws_apigatewayv2_route" "without_auth" {
+#   count     = var.enable_auth == false ? 1 : 0
+#   api_id    = var.gateway_id
+#   route_key = "${var.method} /${local.path}"
+#   target    = "integrations/${aws_apigatewayv2_integration.default.id}"
+# }
+
+resource "aws_apigatewayv2_route" "default" {
   api_id             = var.gateway_id
   route_key          = "${var.method} /${local.path}"
   target             = "integrations/${aws_apigatewayv2_integration.default.id}"
   authorizer_id      = var.authorizer_id
-  authorization_type = "JWT"
-}
-
-// without auth
-resource "aws_apigatewayv2_route" "without_auth" {
-  count     = var.authorizer_id == null ? 1 : 0
-  api_id    = var.gateway_id
-  route_key = "${var.method} /${local.path}"
-  target    = "integrations/${aws_apigatewayv2_integration.default.id}"
+  authorization_type = var.authorizer_id == null ? null : "JWT"
 }
