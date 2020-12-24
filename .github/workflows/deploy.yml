@@ -78,13 +78,12 @@ jobs:
       # Download docker image and lambda functions
       - name: Download artifacts
         uses: actions/download-artifact@v2
-        working-directory: /
         with:
           name: build-artifacts
+          path: ../
 
       - name: list artifacts
-        working-directory: /
-        run: ls -R
+        run: ls -R ../
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
