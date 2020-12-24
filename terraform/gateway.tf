@@ -46,7 +46,7 @@ data "aws_ssm_parameter" "gateway_public_domain" {
 
 resource "aws_apigatewayv2_api_mapping" "public" {
   api_id          = aws_apigatewayv2_api.public.id
-  domain_name     = aws_ssm_parameter.gateway_public_domain.value
+  domain_name     = data.aws_ssm_parameter.gateway_public_domain.value
   stage           = aws_apigatewayv2_stage.v1.id
   api_mapping_key = "v1/${local.uri_prefix}companies"
 }

@@ -28,7 +28,6 @@ resource "aws_iam_role" "lambda_http_create" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
-
 module "lambda_http_create_gateway" {
   source = "./modules/lambda"
   method = "POST"
