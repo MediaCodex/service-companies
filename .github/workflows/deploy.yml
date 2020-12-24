@@ -80,9 +80,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-
-      - name: list artifacts
-        run: ls -R ../
+          path: build/
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -132,7 +130,7 @@ jobs:
 
 
   production:
-    name: 'Deploy prod'
+    name: 'Deploy Prod'
     runs-on: ubuntu-latest
     environment: Production
 
@@ -160,7 +158,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: ../
+          path: build/
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
